@@ -3,9 +3,9 @@
 <title>测试</title>
 <script type="text/javascript">
 	function clicke(){
-	var text = document.getElementById('tt').value;
+	var text = document.getElementById('weburl').value;
 	//alert(text);
-	document.body.style.backgroundColor=text;
+	window.app.jumpToUrl(text);
 }
 
 </script>
@@ -15,5 +15,8 @@
 <input type='button' value='show2' onclick="window.app.showWebView2()"/>
 <input type='button' value='show1' onclick="window.app.showWebView1()"/>
 <input type='button' value='openbaidu' onclick="window.app.openBaidu()"/>
+
+<p>网址</p><input id='weburl' type='text' value='http://www.so.com'/>
+<input type='button' value='跳到网址' onclick="clicke()"/>
 </body>
 </html>

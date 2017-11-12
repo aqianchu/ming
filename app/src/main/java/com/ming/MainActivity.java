@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
                 case 2:
                     webViewFront.setVisibility(View.VISIBLE);
                     webViewBack.setVisibility(View.GONE);
+                    webViewBack.clearView();
                     webViewBack.clearHistory();
                     webViewBack.clearCache(true);
                     break;
@@ -56,7 +57,13 @@ public class MainActivity extends AppCompatActivity {
                     webViewFront.setVisibility(View.VISIBLE);
                     webViewBack.setVisibility(View.GONE);
                     webViewBack.clearHistory();
+                    webViewBack.clearView();
                     webViewBack.clearCache(true);
+                    break;
+                case 5:
+                    webViewFront.setVisibility(View.GONE);
+                    webViewBack.setVisibility(View.VISIBLE);
+                    webViewBack.loadUrl((String) msg.obj);
                     break;
             }
         }
@@ -117,25 +124,34 @@ public class MainActivity extends AppCompatActivity {
         {
             mHandler.sendEmptyMessage(4);
         }
+        @JavascriptInterface
+       public void jumpToUrl(String url) {
+            Message msg = mHandler.obtainMessage(5, url);
+            mHandler.sendMessage(msg);
+        }
     }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         // Check if the key event was the Back button and if there's history
         if ((keyCode == KeyEvent.KEYCODE_BACK)) {
-            boolean isSuc = false;
             if ((webViewFront.getVisibility() == View.VISIBLE && webViewFront.canGoBack())) {
                 webViewFront.goBack();
-                isSuc = true;
+                return true;
             }
             if (webViewBack.getVisibility() == View.VISIBLE && webViewBack.canGoBack()) {
                 webViewBack.goBack();
-                isSuc = true;
+                return true;
             }
-            if (!isSuc) {
-                return super.onKeyDown(keyCode, event);
+            if (webViewBack.getVisibility() == View.VISIBLE) {
+                webViewFront.setVisibility(View.VISIBLE);
+                webViewBack.setVisibility(View.GONE);
+                webViewBack.clearCache(true);
+                webViewBack.clearView();
+                webViewBack.clearHistory();
+                return true;
             }
-            return true;
+            return super.onKeyDown(keyCode, event);
         }
         // If it wasn't the Back key or there's no web page history, bubble up to the default
         // system behavior (probably exit the activity)
